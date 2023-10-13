@@ -6,7 +6,7 @@ import Cards from './Dashboard/Cards';
 import Basketball from './Venues/Basketball';
 import Football from './Venues/Football';
 import Seminar from './Venues/Seminar';
-import Landing from './Registration/Landing';
+import Landing from './Registration/Logins';
 import Logins from './Registration/Logins';
 import Student from './Registration/Student';
 import Faculty from './Registration/Faculty';

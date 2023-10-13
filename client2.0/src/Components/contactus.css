@@ -63,7 +63,7 @@ h2:after {
   height: 4px;
   width: 50px;
   border-radius: 2px;
-  background-color: #2ecc71;
+  background-color: #2e92cc;
 }
 
 .field {
@@ -88,7 +88,8 @@ textarea {
 .btn {
   width: 100%;
   padding: 0.5rem 1rem;
-  background-color: #2ecc71;
+  /* background-color: #2ecc71; */
+  background-color: #2e92cc;
   color: #fff;
   font-size: 1.1rem;
   border: none;
@@ -98,7 +99,8 @@ textarea {
 }
 
 .btn:hover {
-  background-color: #27ae60;
+  /* background-color: #27ae60; */
+  background-color: #276aae;
 }
 
 .field:focus {
