@@ -11,7 +11,9 @@ userRouter.get("/allUsers", userController.getAllUsers);
 
 userRouter.get("/getUserBookings/:id", userController.getUserBookings);
 
-userRouter.get("/:name", userController.getOneUser);
+userRouter.get("/getOneUser/:email", userController.getOneUser);
+
+userRouter.get("/getUser/:id", userController.getUserById);
 
 userRouter.put("/:id", userController.updateUser);
 
