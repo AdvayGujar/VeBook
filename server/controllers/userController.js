@@ -7,22 +7,22 @@ const Booking = db.bookings;
 // 1. create user
 const addUser = async (req, res) => {
   try {
-        const {name, password, email, department, level} = req.body;
-        let info = {
-            name: name,
-            password: password,
-            email: email,
-            department: department,
-            level: level,
-        };
+    const { name, password, email, department, level } = req.body;
+    let info = {
+      name: name,
+      password: password,
+      email: email,
+      department: department,
+      level: level,
+    };
 
-        const user = await User.create(info);
-        res.status(200).send(user);
-        console.log(user);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({error: "Internal server error"});
-    }
+    const user = await User.create(info);
+    res.status(200).send(user);
+    console.log(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 };
 
 // 2. get all users
@@ -33,24 +33,24 @@ const getAllUsers = async (req, res) => {
 
 // 3. get single user
 const getOneUser = async (req, res) => {
-   try {
-    const name = req.params.name;
-    const user = await User.findOne({ where: { name: name } });
+  try {
+    const email = req.params.email;
+    const user = await User.findOne({ where: { email: email } });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
     // Access the user's properties and send them in the response
-    const { id, email, password, department, level} = user;
+    const { id, name, password, department, level } = user;
 
     res.status(200).json({
       id: id,
-      name: user.name,
-      email: email,
+      name: name,
+      email: user.email,
       password: password,
       department: department,
-      level: level
+      level: level,
     });
   } catch (error) {
     console.error(error);
@@ -93,7 +93,32 @@ const getUserBookings = async (req, res) => {
   res.status(200).send(data);
 };
 
+// 7. get single user by id
+const getUserById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const user = await User.findOne({ where: { id: id } });
 
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Access the user's properties and send them in the response
+    const { name, email, password, department, level } = user;
+
+    res.status(200).json({
+      id: user.id,
+      name: name,
+      email: email,
+      password: password,
+      department: department,
+      level: level,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 module.exports = {
   addUser,
@@ -102,4 +127,5 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserBookings,
+  getUserById,
 };

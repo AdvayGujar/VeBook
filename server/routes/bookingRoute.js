@@ -5,8 +5,12 @@ const bookingController = require("../controllers/bookingController.js");
 const bookingRouter = require("express").Router();
 
 bookingRouter.get("/allBookings", bookingController.getAllBookings);
+bookingRouter.get("/getAllBooking/:user_id", bookingController.getAllBookingsByID);
 bookingRouter.get("/getBookingByDateTime", bookingController.getBookingByDateTime);
-bookingRouter.post("/addBooking/:id", bookingController.addBooking);
+bookingRouter.post("/getBookingByDateTimeVenue", bookingController.getBookingByDateTimeVenue);
+bookingRouter.post("/addBooking", bookingController.addBooking);
+bookingRouter.delete("/deleteBooking", bookingController.deleteBooking);
+bookingRouter.delete("/deleteBooking/:id", bookingController.deleteBookingByID);
 
 module.exports = bookingRouter;
 
