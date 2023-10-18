@@ -42,6 +42,10 @@ import CustomerFootball from './Customer/CustomerFootball';
 import CustomerTop from './Customer/CustomerTop';
 import CustomerSeminar from './Customer/CustomerSeminar';
 import CustomerMondini from './Customer/CustomerMondini';
+<<<<<<< HEAD
+=======
+import AdminDashboard from './Admin/AdminDashboard';
+>>>>>>> 6a53e4aefaa4826a537047419362878ca8a31e88
 
 
 function App() {
@@ -50,8 +54,13 @@ function App() {
     // Define an array of paths where Navbar should not be rendered
     const excludedPaths = ['/landing', '/logins', '/student', '/faculty', '/signup', '/customer', '/football-ground', '/basketball-court', '/seminar-hall', '/mondini-hall', '/top-court', '/student-basketball', '/student-football', '/student-top', '/faculty-basketball', '/faculty-football', '/faculty-top', '/faculty-seminar', '/faculty-mondini', '/customer-basketball', '/customer-football', '/customer-top', '/customer-seminar', '/customer-mondini', '/student-dashboard', '/student-grounds', '/faculty-dashboard', '/faculty-grounds', '/faculty-halls', '/customer-dashboard', '/customer-grounds', '/customer-halls']; // Add more paths as needed
     const excludePaths = ['/landing', '/logins', '/student', '/faculty', '/signup', '/customer', '/football-ground', '/basketball-court', '/seminar-hall', '/aboutus', '/contactus', '/mondini-hall', '/top-court', '/student-basketball', '/student-football', '/student-top', '/faculty-basketball', '/faculty-football', '/faculty-top', '/faculty-seminar', '/faculty-mondini', '/customer-basketball', '/customer-football', '/customer-top', '/customer-seminar', '/customer-mondini']; // Add more paths as needed
+<<<<<<< HEAD
     const excludesPaths = ['/landing', '/logins', '/student', '/faculty', '/signup', '/customer', '/basketball-court', '/football-ground', '/seminar-hall', '/aboutus', '/contactus', '/cards', '/grounds', '/halls', '/mondini-hall', '/top-court', '/student-grounds', '/student-basketball', '/student-football', '/student-top', '/faculty-grounds', '/faculty-halls', '/faculty-basketball', '/faculty-football', '/faculty-top', '/faculty-seminar', '/faculty-mondini', '/customer-grounds', '/customer-basketball', '/customer-football', '/customer-top', '/customer-seminar', '/customer-mondini']; // Add more paths as needed
     const excludingPaths = ['/landing', '/logins', '/student', '/faculty', '/signup', '/customer', '/football-ground', '/basketball-court', '/seminar-hall', '/aboutus', '/contactus', '/mondini-hall', '/top-court', '/student-basketball', '/student-football', '/student-top', '/faculty-basketball', '/faculty-football', '/faculty-top', '/faculty-seminar', '/faculty-mondini', '/customer-basketball', '/customer-football', '/customer-top', '/customer-seminar', '/customer-mondini']; // Add more paths as needed
+=======
+    const excludesPaths = ['/landing', '/logins', '/student', '/faculty', '/signup', '/customer', '/basketball-court', '/football-ground', '/seminar-hall', '/aboutus', '/contactus', '/cards', '/grounds', '/halls', '/mondini-hall', '/top-court', '/student-grounds', '/student-basketball', '/student-football', '/student-top', '/faculty-grounds', '/faculty-halls', '/faculty-basketball', '/faculty-football', '/faculty-top', '/faculty-seminar', '/faculty-mondini', '/customer-grounds', '/customer-basketball', '/customer-football', '/customer-top', '/customer-seminar', '/customer-mondini','/admin-dashboard']; // Add more paths as needed
+    const excludingPaths = ['/landing', '/logins', '/student', '/faculty', '/signup', '/customer', '/football-ground', '/basketball-court', '/seminar-hall', '/aboutus', '/contactus', '/mondini-hall', '/top-court', '/student-basketball', '/student-football', '/student-top', '/faculty-basketball', '/faculty-football', '/faculty-top', '/faculty-seminar', '/faculty-mondini', '/customer-basketball', '/customer-football', '/customer-top', '/customer-seminar', '/customer-mondini','/admin-dashboard']; // Add more paths as needed
+>>>>>>> 6a53e4aefaa4826a537047419362878ca8a31e88
 
     // Conditionally render the Navbar based on whether the current path is in the excludedPaths array
     const renderNavbar = !excludedPaths.includes(location.pathname);
@@ -92,6 +101,10 @@ function App() {
                 <Route path="/customer-top" element={<CustomerTop/>}/>
                 <Route path="/customer-seminar" element={<CustomerSeminar/>}/>
                 <Route path="/customer-mondini" element={<CustomerMondini/>}/>
+<<<<<<< HEAD
+=======
+                <Route path="/admin-dashboard" element={<AdminDashboard/>}/>
+>>>>>>> 6a53e4aefaa4826a537047419362878ca8a31e88
 
                 <Route path="/landing" element={<Landing/>}/>
                 <Route path="/logins" element={<Logins/>}/>
