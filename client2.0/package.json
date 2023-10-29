@@ -20,12 +20,8 @@
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.16.0",
     "react-scripts": "5.0.1",
-<<<<<<< HEAD
-    "web-vitals": "^2.1.4"
-=======
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
->>>>>>> 6a53e4aefaa4826a537047419362878ca8a31e88
   },
   "scripts": {
     "start": "react-scripts start",
