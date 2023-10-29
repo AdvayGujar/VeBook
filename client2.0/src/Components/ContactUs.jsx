@@ -109,7 +109,7 @@ class ContactUs extends Component {
     const btnStyle = {
       width: '100%',
       padding: '0.5rem 1rem',
-      backgroundColor: '#2e92cc',
+      backgroundColor: '#17CF97',
       color: '#fff',
       fontSize: '1.1rem',
       border: 'none',

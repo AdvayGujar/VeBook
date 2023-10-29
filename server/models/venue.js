@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     resources: {
       type: DataTypes.STRING,
     },
+    imgPath: {
+      type: DataTypes.STRING,
+    },
     description: {
       type: DataTypes.STRING(1234),
       allowNull: false,

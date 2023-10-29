@@ -8,6 +8,10 @@ venueRouter.post("/addVenue", venueController.addVenue);
 
 venueRouter.get("/allVenues", venueController.getAllVenues);
 
+venueRouter.get("/allGrounds", venueController.getAllGrounds);
+
+venueRouter.get("/allHalls", venueController.getAllHalls);
+
 venueRouter.get("/getVenueBookings/:id", venueController.getVenueBookings);
 
 venueRouter.get("/:id", venueController.getOneVenue);
