@@ -1,12 +1,11 @@
 const express = require("express");
-const bodyParser = require('body-parser');
-const nodemailer = require('nodemailer');
-const cors = require('cors');
-const {Op} = require("sequelize");
-const cron = require('node-cron');
+const bodyParser = require("body-parser");
+const nodemailer = require("nodemailer");
+const cors = require("cors");
+const { Op } = require("sequelize");
+const cron = require("node-cron");
 
-
-const app = express()
+const app = express();
 app.use(bodyParser.json());
 
 const db = require("./models");
@@ -17,10 +16,10 @@ const Booking = db.bookings;
 
 app.use(cors());
 
-app.use(express.json())
+app.use(express.json());
 
-app.use(express.urlencoded({extended: true}))
-
+app.use(express.urlencoded({ extended: true }));
+app.use("/static", express.static("public"));
 // //USER ROUTES
 // app.get("/getOneUser/:email", async (req, res) => {
 //     try {
@@ -97,15 +96,15 @@ app.use(express.urlencoded({extended: true}))
 //BOOKINGS
 // app.post('/addBooking', async (req, res) => {
 //     try {
-        // const {user_id, venue_id, level, date, start_time, end_time, status} = req.body;
-        // let data = {
-        //     user_id: user_id,
-        //     venue_id: venue_id,
-        //     level: level,
-        //     date: date,
-        //     start_time: start_time,
-        //     end_time: end_time,
-        //     status: status,
+// const {user_id, venue_id, level, date, start_time, end_time, status} = req.body;
+// let data = {
+//     user_id: user_id,
+//     venue_id: venue_id,
+//     level: level,
+//     date: date,
+//     start_time: start_time,
+//     end_time: end_time,
+//     status: status,
 //         };
 
 //         const booking = await Booking.create(data);
@@ -234,115 +233,114 @@ app.use(express.urlencoded({extended: true}))
 // });
 
 //EMAIL
-app.post('/sendEmail', (req, res) => {
-    const {name, email, message} = req.body;
+app.post("/sendEmail", (req, res) => {
+  const { name, email, message } = req.body;
 
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'advay2003gujar@gmail.com',
-            pass: 'cfoi dbap ijlx ujth',
-        },
-    });
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "advay2003gujar@gmail.com",
+      pass: "cfoi dbap ijlx ujth",
+    },
+  });
 
-    const mailOptions = {
-        from: 'advay2003gujar@gmail.com',
-        to: 'advay2003gujar@gmail.com',
-        subject: 'Contact Form Submission',
-        text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
-    };
+  const mailOptions = {
+    from: "advay2003gujar@gmail.com",
+    to: "advay2003gujar@gmail.com",
+    subject: "Contact Form Submission",
+    text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
+  };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error(error);
-            res.status(500).send('Error sending email');
-        } else {
-            console.log('Email sent: ' + info.response);
-            res.status(200).send('Email sent successfully');
-        }
-    });
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error(error);
+      res.status(500).send("Error sending email");
+    } else {
+      console.log("Email sent: " + info.response);
+      res.status(200).send("Email sent successfully");
+    }
+  });
 });
 
-app.post('/bookingEmail', (req, res) => {
-    const {name, email, message} = req.body;
+app.post("/bookingEmail", (req, res) => {
+  const { name, email, message } = req.body;
 
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'advay2003gujar@gmail.com',
-            pass: 'cfoi dbap ijlx ujth',
-        },
-    });
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "advay2003gujar@gmail.com",
+      pass: "cfoi dbap ijlx ujth",
+    },
+  });
 
-    const mailOptions = {
-        from: 'advay2003gujar@gmail.com',
-        to: email,
-        subject: 'Contact Form Submission',
-        text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
-    };
+  const mailOptions = {
+    from: "advay2003gujar@gmail.com",
+    to: email,
+    subject: "Contact Form Submission",
+    text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
+  };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error(error);
-            res.status(500).send('Error sending email');
-        } else {
-            console.log('Email sent: ' + info.response);
-            res.status(200).send('Email sent successfully');
-        }
-    });
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error(error);
+      res.status(500).send("Error sending email");
+    } else {
+      console.log("Email sent: " + info.response);
+      res.status(200).send("Email sent successfully");
+    }
+  });
 });
 
 async function updateBookingStatus() {
-    try {
-        const currentDate = new Date();
-        const currentHour = currentDate.getHours() * 100 + currentDate.getMinutes();
+  try {
+    const currentDate = new Date();
+    const currentHour = currentDate.getHours() * 100 + currentDate.getMinutes();
 
-        const bookingsToUpdate = await Booking.findAll({
-            where: {
-                status: 1, // Assuming status 1 represents active bookings
-                [Op.or]: [
-                    {
-                        date: { [Op.lt]: currentDate }, // Date has elapsed
-                    },
-                    {
-                        date: currentDate, // Date is the current date
-                        end_time: { [Op.lt]: currentHour }, // End time has elapsed
-                    },
-                ],
-            },
-        });
+    const bookingsToUpdate = await Booking.findAll({
+      where: {
+        status: 1, // Assuming status 1 represents active bookings
+        [Op.or]: [
+          {
+            date: { [Op.lt]: currentDate }, // Date has elapsed
+          },
+          {
+            date: currentDate, // Date is the current date
+            end_time: { [Op.lt]: currentHour }, // End time has elapsed
+          },
+        ],
+      },
+    });
 
-        if (bookingsToUpdate.length > 0) {
-            for (const booking of bookingsToUpdate) {
-                booking.status = 2; // Set status to 2 for elapsed bookings
-                await booking.save();
-            }
-            console.log(`Updated ${bookingsToUpdate.length} bookings to status 2.`);
-        }
-    } catch (error) {
-        console.error('Error updating booking statuses:', error);
+    if (bookingsToUpdate.length > 0) {
+      for (const booking of bookingsToUpdate) {
+        booking.status = 2; // Set status to 2 for elapsed bookings
+        await booking.save();
+      }
+      console.log(`Updated ${bookingsToUpdate.length} bookings to status 2.`);
     }
+  } catch (error) {
+    console.error("Error updating booking statuses:", error);
+  }
 }
 
 // routers
-const userRouter = require('./routes/userRoute.js')
-app.use('/api/users', userRouter)
-const venueRouter = require('./routes/venueRoute.js')
-app.use('/api/venues', venueRouter)
-const bookingRouter = require('./routes/bookingRoute.js')
-app.use('/api/bookings', bookingRouter)
+const userRouter = require("./routes/userRoute.js");
+app.use("/api/users", userRouter);
+const venueRouter = require("./routes/venueRoute.js");
+app.use("/api/venues", venueRouter);
+const bookingRouter = require("./routes/bookingRoute.js");
+app.use("/api/bookings", bookingRouter);
 
 //static Images Folder
 
 // app.use('/Images', express.static('./Images'))
 
-
 //port
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000;
 
 //server
 app.listen(PORT, () => {
-    console.log(`server is running on port http://localhost:${PORT}`)
+  console.log(`server is running on port http://localhost:${PORT}`);
 
-    cron.schedule('* * * * *', updateBookingStatus);
-})
+  cron.schedule("* * * * *", updateBookingStatus);
+});

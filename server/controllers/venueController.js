@@ -30,6 +30,16 @@ const getAllVenues = async (req, res) => {
   res.status(200).send(venues);
 };
 
+//  gets all grounds
+const getAllGrounds = async (req, res) => {
+  let venue = await Venue.findAll({ where: { type: 0 } });
+  res.status(200).send(venue);
+};
+//  gets all halls
+const getAllHalls = async (req, res) => {
+  let venue = await Venue.findAll({ where: { type: 1 } });
+  res.status(200).send(venue);
+};
 // 3. get single venue
 const getOneVenue = async (req, res) => {
   let id = req.params.id;
@@ -100,6 +110,8 @@ const getVenueBookings = async (req, res) => {
 module.exports = {
   addVenue,
   getAllVenues,
+  getAllGrounds,
+  getAllHalls,
   getOneVenue,
   updateVenue,
   deleteVenue,
