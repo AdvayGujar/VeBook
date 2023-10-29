@@ -65,7 +65,7 @@ function CustomerSeminar() {
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setVenueVariable(5);
+        setVenueVariable(1);
 
         //converting react date format to mysql DATE datatype format
         const dt = new Date(date)
@@ -88,7 +88,7 @@ function CustomerSeminar() {
                     venue_id: getVenueVariable(),
                 }
                 console.log('Working1');
-                const response = await fetch(`http://localhost:3000/getBookingByDateTimeVenue`, {
+                const response = await fetch(`http://localhost:3000/api/bookings/getBookingByDateTimeVenue`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ function CustomerSeminar() {
                         };
 
 
-                        const response = await fetch(`http://localhost:3000/addBooking`, {
+                        const response = await fetch(`http://localhost:3000/api/bookings/addBooking`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -126,7 +126,7 @@ function CustomerSeminar() {
                             const mailData = {
                                 name: getNameVariable(),
                                 email: getEmailVariable(),
-                                message: `${getNameVariable()} you have booked the Seminar Hall on ${date} from ${startTime} to ${endTime}`,
+                                message: `${getNameVariable()} you have booked the Football Ground on ${date} from ${startTime} to ${endTime}`,
                             };
 
                             try {

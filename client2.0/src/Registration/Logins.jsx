@@ -24,7 +24,7 @@ function Logins() {
         }
 
         try {
-            const response = await fetch(`http://localhost:3000/getOneUser/${email}`);
+            const response = await fetch(`http://localhost:3000/api/users/getOneUser/${email}`);
 
             if (response.status === 200) {
                 const user = await response.json();

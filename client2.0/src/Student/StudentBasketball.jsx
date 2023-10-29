@@ -52,7 +52,7 @@ function StudentBasketball() {
                     venue_id: getVenueVariable(),
                 }
                 console.log('Working1');
-                const response = await fetch(`http://localhost:3000/getBookingByDateTimeVenue`, {
+                const response = await fetch(`http://localhost:3000/api/bookings/getBookingByDateTimeVenue`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ function StudentBasketball() {
                                 status: 1,
                             };
 
-                            fetch(`http://localhost:3000/deleteBooking`, {
+                            fetch(`http://localhost:3000/api/bookings/deleteBooking`, {
                                 method: 'DELETE',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ function StudentBasketball() {
                             })
                                 .then(async (response) => {
                                     if (response.ok) {
-                                        const response = await fetch(`http://localhost:3000/getUser/${booking.user_id}`);
+                                        const response = await fetch(`http://localhost:3000/api/users/getUser/${booking.user_id}`);
 
                                         const user = await response.json();
 
@@ -125,7 +125,7 @@ function StudentBasketball() {
                                     console.error('Error:', error);
                                 });
 
-                            const response = await fetch(`http://localhost:3000/addBooking`, {
+                            const response = await fetch(`http://localhost:3000/api/bookings/addBooking`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -181,7 +181,7 @@ function StudentBasketball() {
                         };
 
 
-                        const response = await fetch(`http://localhost:3000/addBooking`, {
+                        const response = await fetch(`http://localhost:3000/api/bookings/addBooking`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

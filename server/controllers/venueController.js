@@ -1,4 +1,5 @@
 const db = require("../models");
+const {Op} = require("sequelize");
 
 // // image Upload
 // const multer = require("multer");

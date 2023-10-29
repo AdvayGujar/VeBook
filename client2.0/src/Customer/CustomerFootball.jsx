@@ -88,7 +88,7 @@ function CustomerFootball() {
                     venue_id: getVenueVariable(),
                 }
                 console.log('Working1');
-                const response = await fetch(`http://localhost:3000/getBookingByDateTimeVenue`, {
+                const response = await fetch(`http://localhost:3000/api/bookings/getBookingByDateTimeVenue`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ function CustomerFootball() {
                         };
 
 
-                        const response = await fetch(`http://localhost:3000/addBooking`, {
+                        const response = await fetch(`http://localhost:3000/api/bookings/addBooking`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

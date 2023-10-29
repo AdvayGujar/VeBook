@@ -1,4 +1,5 @@
 const db = require("../models");
+const {Op} = require("sequelize");
 
 // create main Model
 const User = db.users;

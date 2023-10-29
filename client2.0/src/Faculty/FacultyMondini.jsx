@@ -65,7 +65,7 @@ function FacultyMondini() {
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setVenueVariable(4);
+        setVenueVariable(1);
 
         //converting react date format to mysql DATE datatype format
         const dt = new Date(date)
@@ -88,7 +88,7 @@ function FacultyMondini() {
                     venue_id: getVenueVariable(),
                 }
                 console.log('Working1');
-                const response = await fetch(`http://localhost:3000/getBookingByDateTimeVenue`, {
+                const response = await fetch(`http://localhost:3000/api/bookings/getBookingByDateTimeVenue`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ function FacultyMondini() {
                                 status: 1,
                             };
 
-                            fetch(`http://localhost:3000/deleteBooking/${booking.id}`, {
+                            fetch(`http://localhost:3000/api/bookings/deleteBooking/${booking.id}`, {
                                 method: 'DELETE',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -122,14 +122,14 @@ function FacultyMondini() {
                             })
                                 .then(async (response) => {
                                     if (response.ok) {
-                                        const response = await fetch(`http://localhost:3000/getUser/${booking.user_id}`);
+                                        const response = await fetch(`http://localhost:3000/api/users/getUser/${booking.user_id}`);
 
                                         const user = await response.json();
 
                                         const mailData = {
                                             name: user.name,
                                             email: user.email,
-                                            message: `${user.name} your booked slot for Mondini Hall on ${booking.date} from ${booking.start_time} to ${booking.end_time} has been canceled due to booking by a higher authority.`,
+                                            message: `${user.name} your booked slot for Football Ground on ${booking.date} from ${booking.start_time} to ${booking.end_time} has been canceled due to booking by a higher authority.`,
                                         };
 
                                         try {
@@ -160,7 +160,7 @@ function FacultyMondini() {
                                     console.error('Error:', error);
                                 });
 
-                            const response = await fetch(`http://localhost:3000/addBooking`, {
+                            const response = await fetch(`http://localhost:3000/api/bookings/addBooking`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -173,7 +173,7 @@ function FacultyMondini() {
                                 const mailData = {
                                     name: getNameVariable(),
                                     email: getEmailVariable(),
-                                    message: `${getNameVariable()} you have booked the Mondini Hall on ${date} from ${startTime} to ${endTime}`,
+                                    message: `${getNameVariable()} you have booked the Football Ground on ${date} from ${startTime} to ${endTime}`,
                                 };
 
                                 try {
@@ -216,7 +216,7 @@ function FacultyMondini() {
                         };
 
 
-                        const response = await fetch(`http://localhost:3000/addBooking`, {
+                        const response = await fetch(`http://localhost:3000/api/bookings/addBooking`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -228,7 +228,7 @@ function FacultyMondini() {
                             const mailData = {
                                 name: getNameVariable(),
                                 email: getEmailVariable(),
-                                message: `${getNameVariable()} you have booked the Mondini Hall on ${date} from ${startTime} to ${endTime}`,
+                                message: `${getNameVariable()} you have booked the Football Ground on ${date} from ${startTime} to ${endTime}`,
                             };
 
                             try {

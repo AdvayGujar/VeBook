@@ -64,7 +64,7 @@ class FacultyTable extends Component {
     try {
       const user_id = getUserVariable(); // Get the user ID from your function
       console.log(user_id);
-      const response = await fetch(`http://localhost:3000/getAllBooking/${user_id}`);
+      const response = await fetch(`http://localhost:3000/api/bookings/getAllBooking/${user_id}`);
       if (!response.ok) {
         console.log('Failed to fetch data');
       }
@@ -97,7 +97,7 @@ class FacultyTable extends Component {
   try {
     const { selectedBooking } = this.state;
     // Assuming you have an endpoint for canceling bookings, adjust the URL accordingly
-    const response = await fetch(`http://localhost:3000/deleteBooking/${selectedBooking.id}`, {
+    const response = await fetch(`http://localhost:3000/api/bookings/deleteBooking/${selectedBooking.id}`, {
       method: 'DELETE', // or 'DELETE' depending on your API
       headers: {
         'Content-Type': 'application/json',
