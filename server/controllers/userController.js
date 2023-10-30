@@ -8,10 +8,10 @@ const Booking = db.bookings;
 // 1. create user
 const addUser = async (req, res) => {
   try {
-    const { name, password, email, department, level } = req.body;
+    const { name, md5Password, email, department, level } = req.body;
     let info = {
       name: name,
-      password: password,
+      password: md5Password,
       email: email,
       department: department,
       level: level,

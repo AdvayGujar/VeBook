@@ -8,6 +8,7 @@ function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [department, setDepartment] = useState('');
   const [error, setError] = useState('');
 
@@ -180,7 +181,6 @@ function Signup() {
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-
     const nameRegex = /^[A-Za-z\s]+$/;
 
     if(!nameRegex.test(name)){
@@ -193,7 +193,10 @@ function Signup() {
       return;
     }
 
-    setPassword(md5(password));
+    if (password != confirmPassword){
+      setError('Enter correct password')
+      return;
+    }
 
     //email validation
     if(!isEmailValid(email)) {
@@ -213,9 +216,11 @@ function Signup() {
         return;
       } else {
         try {
+          const md5Password = md5(password);
+          console.log(md5Password);
           const userData = {
             name,
-            password,
+            md5Password,
             email,
             department: departmentValue,
             level: userTypeValue,
@@ -274,6 +279,14 @@ function Signup() {
             placeholder="Enter Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+          />
+          <p>Confrim Password</p>
+          <input
+            type="password"
+            name="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <div className="d-flex">
             <div className="w-50 pr-2">

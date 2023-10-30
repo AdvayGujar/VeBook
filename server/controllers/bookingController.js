@@ -33,7 +33,7 @@ const getAllBookings = async (req, res) => {
   res.status(200).send(bookings);
 };
 
-const getAllBookingsByID = async (req, res) => {
+const getAllBookingsByUserID = async (req, res) => {
   try {
     const user_id = req.params.user_id;
     const bookings = await Booking.findAll({ where: { user_id: user_id } });
@@ -60,6 +60,32 @@ const getAllBookingsByID = async (req, res) => {
   }
 };
 
+const getAllBookingsByID = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const bookings = await Booking.findOne({ where: { id: id } });
+
+    if (bookings.length === 0) {
+      return res.status(400).json({ error: "No bookings found" });
+    }
+
+    const { user_id,venue_id, level,date,start_time,end_time, status } = bookings;
+
+    res.status(200).json({
+      id: id,
+      user_id: user_id,
+      venue_id: venue_id,
+      level: level,
+      date: date,
+      start_time: start_time,
+      end_time: end_time,
+      status: status,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 const getBookingByDateTimeVenue = async (req, res) => {
   try {
     const { date, start_time, end_time, venue_id } = req.body;
@@ -177,6 +203,7 @@ const pendingBookingByID = async (req, res) => {
 module.exports = {
   addBooking,
   getAllBookings,
+  getAllBookingsByUserID,
   getAllBookingsByID,
   getBookingByDateTimeVenue,
   getBookingByDateTime,

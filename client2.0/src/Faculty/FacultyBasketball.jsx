@@ -173,7 +173,7 @@ function FacultyBasketball() {
                                 const mailData = {
                                     name: getNameVariable(),
                                     email: getEmailVariable(),
-                                    message: `${getNameVariable()} you have booked the Football Ground on ${date} from ${startTime} to ${endTime}`,
+                                    message: `${getNameVariable()}, your request to book the Basketball Court on ${date} from ${startTime} to ${endTime} has been received`,
                                 };
 
                                 try {
@@ -228,7 +228,7 @@ function FacultyBasketball() {
                             const mailData = {
                                 name: getNameVariable(),
                                 email: getEmailVariable(),
-                                message: `${getNameVariable()} you have booked the Football Ground on ${date} from ${startTime} to ${endTime}`,
+                                message: `${getNameVariable()}, your request to book the Basketball Court on ${date} from ${startTime} to ${endTime} has been received`,
                             };
 
                             try {

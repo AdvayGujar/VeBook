@@ -1,7 +1,14 @@
 import React, {Component} from 'react';
 import * as XLSX from 'xlsx';
 import backgroundImage from '../assets/stats.png'; // Import the image
-import {getUserVariable, setUserVariable, setLevelVariable, getLevelVariable} from '../global';
+import {
+    getUserVariable,
+    setUserVariable,
+    setLevelVariable,
+    getLevelVariable,
+    getNameVariable,
+    getEmailVariable
+} from '../global';
 
 const venueMapping = {
     1: 'Football Ground',
@@ -248,8 +255,52 @@ class AdminDashboard extends Component {
                 throw new Error('Failed to approve booking');
             }
 
+            const bookingResponse = await fetch(`http://localhost:3000/api/bookings/getBookingById/${bookingId}`)
+            if (!bookingResponse.ok) {
+                throw new Error('Failed to fetch booking details');
+            }
+
+            const bookingData = await bookingResponse.json();
+            const userId = bookingData.user_id;
+            const date = bookingData.date;
+            const startTime = bookingData.start_time;
+            const endTime = bookingData.end_time;
+
+            const userResponse = await fetch(`http://localhost:3000/api/users/getUser/${userId}`);
+            if (!userResponse.ok) {
+                throw new Error('Failed to fetch user details');
+            }
+
+            const userData = await userResponse.json();
+            const userEmail = userData.email;
+            const userName = userData.name;
+
+            const mailData = {
+                name: userName,
+                email: userEmail,
+                message: `${userName} you have booked the Football Ground on ${date} from ${startTime} to ${endTime}`,
+            };
+
+            try {
+                const response = await fetch(`http://localhost:3000/bookingEmail`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(mailData),
+                });
+
+                if (response.status === 200) {
+                    console.log('Done');
+                } else {
+                    console.error('Server error');
+                }
+            } catch (error) {
+                console.error('An error occurred', error);
+            }
             // If the approval was successful, update the pending approvals
             this.fetchRecentBookings(); // Call the function to fetch updated pending approvals
+            this.fetchBookingHistory();
         } catch (error) {
             console.error(error);
         }
@@ -267,8 +318,52 @@ class AdminDashboard extends Component {
                 throw new Error('Failed to approve booking');
             }
 
+            const bookingResponse = await fetch(`http://localhost:3000/api/bookings/getBookingById/${bookingId}`)
+            if (!bookingResponse.ok) {
+                throw new Error('Failed to fetch booking details');
+            }
+
+            const bookingData = await bookingResponse.json();
+            const userId = bookingData.user_id;
+            const date = bookingData.date;
+            const startTime = bookingData.start_time;
+            const endTime = bookingData.end_time;
+
+            const userResponse = await fetch(`http://localhost:3000/api/users/getUser/${userId}`);
+            if (!userResponse.ok) {
+                throw new Error('Failed to fetch user details');
+            }
+
+            const userData = await userResponse.json();
+            const userEmail = userData.email;
+            const userName = userData.name;
+
+            const mailData = {
+                name: userName,
+                email: userEmail,
+                message: `${userName} your requested booking for the Football Ground on ${date} from ${startTime} to ${endTime} has been denied`,
+            };
+
+            try {
+                const response = await fetch(`http://localhost:3000/bookingEmail`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(mailData),
+                });
+
+                if (response.status === 200) {
+                    console.log('Done');
+                } else {
+                    console.error('Server error');
+                }
+            } catch (error) {
+                console.error('An error occurred', error);
+            }
             // If the approval was successful, update the pending approvals
             this.fetchRecentBookings(); // Call the function to fetch updated pending approvals
+            this.fetchBookingHistory();
         } catch (error) {
             console.error(error);
         }

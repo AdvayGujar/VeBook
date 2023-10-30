@@ -15,8 +15,9 @@ function Logins() {
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        setPassword(md5(password));
+        const md5Password = md5(password);
 
+        console.log(md5Password);
         // You can add your login logic here and handle errors
         if (!email || !password) {
             setError('Please enter both email and password.');
@@ -29,7 +30,7 @@ function Logins() {
             if (response.status === 200) {
                 const user = await response.json();
 
-                if (password === user.password) {
+                if (md5Password === user.password) {
                     if (user.level === 1) {
                         setError('');
                         setUserVariable(user.id);
@@ -65,6 +66,13 @@ function Logins() {
                         setEmailVariable(user.email);
                         setNameVariable(user.name);
                         history('/faculty-dashboard');
+                    } else if (user.level === 10) {
+                        setError('');
+                        setUserVariable(user.id);
+                        setLevelVariable(user.level);
+                        setEmailVariable(user.email);
+                        setNameVariable(user.name);
+                        history('/admin-dashboard');
                     } else {
                         setError("Invalid email or password");
                     }
