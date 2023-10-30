@@ -65,7 +65,7 @@ function CustomerMondini() {
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setVenueVariable(1);
+        setVenueVariable(4);
 
         //converting react date format to mysql DATE datatype format
         const dt = new Date(date)

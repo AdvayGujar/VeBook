@@ -65,7 +65,7 @@ function FacultySeminar() {
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setVenueVariable(1);
+        setVenueVariable(5);
 
         //converting react date format to mysql DATE datatype format
         const dt = new Date(date)
@@ -111,7 +111,7 @@ function FacultySeminar() {
                                 date: mysqlDate,
                                 start_time: start(startTime),
                                 end_time: end(endTime),
-                                status: 1,
+                                status: 3,
                             };
 
                             fetch(`http://localhost:3000/api/bookings/deleteBooking/${booking.id}`, {
@@ -212,7 +212,7 @@ function FacultySeminar() {
                             date: mysqlDate,
                             start_time: start(startTime),
                             end_time: end(endTime),
-                            status: 1,
+                            status: 3,
                         };
 
 

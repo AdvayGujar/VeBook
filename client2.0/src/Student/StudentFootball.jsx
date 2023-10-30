@@ -25,7 +25,7 @@ function StudentFootball() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setVenueVariable(2);
+        setVenueVariable(1);
 
         const selectedOption = JSON.parse(time);
         const startTime = selectedOption.start;

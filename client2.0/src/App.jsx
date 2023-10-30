@@ -8,10 +8,6 @@ import {
 } from "react-router-dom";
 import Navbar from "./Components/Navbar";
 
-import React from 'react';
-import {BrowserRouter as Router, Route, Routes, useLocation} from 'react-router-dom';
-import Navbar from './Components/Navbar';
-
 import Cards from "./Dashboard/Cards";
 import Basketball from "./Venues/Basketball";
 import Football from "./Venues/Football";
@@ -58,14 +54,6 @@ import Test from "./dhruuv/venue_specific_page";
 function App() {
 
     const location = useLocation();
-
-    // Define an array of paths where Navbar should not be rendered
-    const excludedPaths = ['/landing', '/logins', '/student', '/faculty', '/signup', '/customer', '/football-ground', '/basketball-court', '/seminar-hall', '/mondini-hall', '/top-court', '/student-basketball', '/student-football', '/student-top', '/faculty-basketball', '/faculty-football', '/faculty-top', '/faculty-seminar', '/faculty-mondini', '/customer-basketball', '/customer-football', '/customer-top', '/customer-seminar', '/customer-mondini', '/student-dashboard', '/student-grounds', '/faculty-dashboard', '/faculty-grounds', '/faculty-halls', '/customer-dashboard', '/customer-grounds', '/customer-halls']; // Add more paths as needed
-    const excludePaths = ['/landing', '/logins', '/student', '/faculty', '/signup', '/customer', '/football-ground', '/basketball-court', '/seminar-hall', '/aboutus', '/contactus', '/mondini-hall', '/top-court', '/student-basketball', '/student-football', '/student-top', '/faculty-basketball', '/faculty-football', '/faculty-top', '/faculty-seminar', '/faculty-mondini', '/customer-basketball', '/customer-football', '/customer-top', '/customer-seminar', '/customer-mondini']; // Add more paths as needed
-
-    const excludesPaths = ['/landing', '/logins', '/student', '/faculty', '/signup', '/customer', '/basketball-court', '/football-ground', '/seminar-hall', '/aboutus', '/contactus', '/cards', '/grounds', '/halls', '/mondini-hall', '/top-court', '/student-grounds', '/student-basketball', '/student-football', '/student-top', '/faculty-grounds', '/faculty-halls', '/faculty-basketball', '/faculty-football', '/faculty-top', '/faculty-seminar', '/faculty-mondini', '/customer-grounds', '/customer-basketball', '/customer-football', '/customer-top', '/customer-seminar', '/customer-mondini','/admin-dashboard']; // Add more paths as needed
-    const excludingPaths = ['/landing', '/logins', '/student', '/faculty', '/signup', '/customer', '/football-ground', '/basketball-court', '/seminar-hall', '/aboutus', '/contactus', '/mondini-hall', '/top-court', '/student-basketball', '/student-football', '/student-top', '/faculty-basketball', '/faculty-football', '/faculty-top', '/faculty-seminar', '/faculty-mondini', '/customer-basketball', '/customer-football', '/customer-top', '/customer-seminar', '/customer-mondini','/admin-dashboard']; // Add more paths as needed
-
 
   // Define an array of paths where Navbar should not be rendered
   const excludedPaths = [
@@ -235,7 +223,7 @@ function App() {
         <Route path="/customer-top" element={<CustomerTop />} />
         <Route path="/customer-seminar" element={<CustomerSeminar />} />
         <Route path="/customer-mondini" element={<CustomerMondini />} />
-
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/landing" element={<Landing />} />
         <Route path="/logins" element={<Logins />} />
         <Route path="/student" element={<Student />} />

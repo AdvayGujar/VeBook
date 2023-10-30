@@ -159,6 +159,21 @@ const deleteBookingByID = async (req, res) => {
   }
 };
 
+const pendingBookingByID = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const booking = await Booking.findOne({ where: { id: id } });
+
+    booking.status = 1;
+    await booking.save();
+
+    res.status(200).json({ message: "Booking activated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   addBooking,
   getAllBookings,
@@ -167,4 +182,5 @@ module.exports = {
   getBookingByDateTime,
   deleteBooking,
   deleteBookingByID,
+  pendingBookingByID,
 };

@@ -11,6 +11,7 @@ bookingRouter.post("/getBookingByDateTimeVenue", bookingController.getBookingByD
 bookingRouter.post("/addBooking", bookingController.addBooking);
 bookingRouter.delete("/deleteBooking", bookingController.deleteBooking);
 bookingRouter.delete("/deleteBooking/:id", bookingController.deleteBookingByID);
+bookingRouter.delete("/pendingBooking/:id", bookingController.pendingBookingByID);
 
 module.exports = bookingRouter;
 

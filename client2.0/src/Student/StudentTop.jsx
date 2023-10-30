@@ -25,7 +25,7 @@ function StudentTop() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setVenueVariable(2);
+        setVenueVariable(3);
 
         const selectedOption = JSON.parse(time);
         const startTime = selectedOption.start;

@@ -111,7 +111,7 @@ function FacultyFootball() {
                                 date: mysqlDate,
                                 start_time: start(startTime),
                                 end_time: end(endTime),
-                                status: 1,
+                                status: 3,
                             };
 
                             fetch(`http://localhost:3000/api/bookings/deleteBooking/${booking.id}`, {
@@ -212,7 +212,7 @@ function FacultyFootball() {
                             date: mysqlDate,
                             start_time: start(startTime),
                             end_time: end(endTime),
-                            status: 1,
+                            status: 3,
                         };
 
 
