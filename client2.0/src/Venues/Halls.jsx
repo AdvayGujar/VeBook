@@ -45,7 +45,8 @@ class Cards extends Component {
             venues.map((venue) => (
               <div className="col mb-4">
                 <Card
-                  key={venue._id}
+                  key={venue.id}
+                  id={venue.id}
                   title={venue.name}
                   description={venue.description}
                   imgsrc={`http://localhost:3000/static/${venue.imgPath}`}
