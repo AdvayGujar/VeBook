@@ -225,21 +225,51 @@ class AdminDashboard extends Component {
         }
     }
 
-    handleFileUpload = (userData) => {
-        const sampleUserData = [
-            {
-                Name: 'John Doe',
-                Email: 'john@example.com',
-                Role: 'Admin',
-            },
-            {
-                Name: 'Jane Smith',
-                Email: 'jane@example.com',
-                Role: 'User',
-            },
-        ];
+    handleFileUpload = (event) => {
+        const inputElement = event.target;
+        const file = inputElement.files[0];
 
-        this.setState({userData: sampleUserData});
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                const data = e.target.result;
+                const workbook = XLSX.read(data, {type: 'binary'});
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+
+                const userData = XLSX.utils.sheet_to_json(sheet, {header: 1});
+
+                // Assuming the first row contains headers and the data starts from the second row
+                const formattedUserData = userData.slice(1).map((row) => ({
+                    name: row[0],
+                    md5Password: row[1], // Use your preferred password hashing method
+                    email: row[2],
+                    department: row[3],
+                    level: row[4],
+                }));
+
+                // Send the formatted user data to the server
+                fetch('http://localhost:3000/api/users/addUser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({users: formattedUserData}),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log('Users added:', data);
+                        // Optionally, update state or UI to indicate successful upload
+                    })
+                    .catch((error) => {
+                        console.error('Error adding users:', error);
+                        // Handle error, e.g., display an error message to the user
+                    });
+            };
+
+            reader.readAsBinaryString(file);
+        }
     }
 
     approveBooking = async (bookingId) => {
@@ -400,16 +430,20 @@ class AdminDashboard extends Component {
                                     <thead style={styles.tableHeader}>
                                     <tr>
                                         <th style={styles.tableHeaderCell}>Name</th>
+                                        <th style={styles.tableHeaderCell}>Password</th>
                                         <th style={styles.tableHeaderCell}>Email</th>
-                                        <th style={styles.tableHeaderCell}>Role</th>
+                                        <th style={styles.tableHeaderCell}>Department</th>
+                                        <th style={styles.tableHeaderCell}>Level</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     {this.state.userData.map((user, index) => (
                                         <tr key={index}>
                                             <td style={styles.tableCell}>{user.Name}</td>
+                                            <td style={styles.tableCell}>{user.Password}</td>
                                             <td style={styles.tableCell}>{user.Email}</td>
-                                            <td style={styles.tableCell}>{user.Role}</td>
+                                            <td style={styles.tableCell}>{user.Department}</td>
+                                            <td style={styles.tableCell}>{user.Level}</td>
                                         </tr>
                                     ))}
                                     </tbody>

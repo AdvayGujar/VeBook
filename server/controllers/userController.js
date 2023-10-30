@@ -8,18 +8,43 @@ const Booking = db.bookings;
 // 1. create user
 const addUser = async (req, res) => {
   try {
-    const { name, md5Password, email, department, level } = req.body;
-    let info = {
-      name: name,
-      password: md5Password,
-      email: email,
-      department: department,
-      level: level,
-    };
+    const usersData = req.body.users;
 
-    const user = await User.create(info);
-    res.status(200).send(user);
-    console.log(user);
+    if (Array.isArray(usersData)) {
+      // For bulk insertion of users
+      const users = await Promise.all(
+        usersData.map(async (userData) => {
+          const { name, md5Password, email, department, level } = userData;
+
+          const user = await User.create({
+            name,
+            password: md5Password,
+            email,
+            department,
+            level,
+          });
+
+          return user;
+        })
+      );
+
+      res.status(200).json(users);
+      console.log(users);
+    } else {
+      // For a single user creation or update
+      const { name, md5Password, email, department, level } = usersData;
+
+      const user = await User.create({
+        name,
+        password: md5Password,
+        email,
+        department,
+        level,
+      });
+
+      res.status(200).json(user);
+      console.log(user);
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
