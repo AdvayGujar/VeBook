@@ -240,7 +240,7 @@ function App() {
         <Route path="/footer" element={<Footer />} />
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/hr" element={<hr />} />
-        <Route path="/test" element={<Test />} />
+        <Route path="/test/:id" element={<Test />} />
 
         {/* Add more routes as needed */}
       </Routes>
