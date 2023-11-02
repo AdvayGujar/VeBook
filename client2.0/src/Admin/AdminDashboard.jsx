@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import * as XLSX from 'xlsx';
 import backgroundImage from '../assets/stats.png'; // Import the image
+import md5 from 'md5';
 import {
     getUserVariable,
     setUserVariable,
@@ -217,7 +218,7 @@ class AdminDashboard extends Component {
 
             pendingApprovalsWithUserNames.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            const limitedBookings = pendingApprovalsWithUserNames.slice(0, 30);
+            const limitedBookings = pendingApprovalsWithUserNames.slice(0, 15);
 
             this.setState({bookingHistory: limitedBookings});
         } catch (error) {
@@ -243,7 +244,7 @@ class AdminDashboard extends Component {
                 // Assuming the first row contains headers and the data starts from the second row
                 const formattedUserData = userData.slice(1).map((row) => ({
                     name: row[0],
-                    md5Password: row[1], // Use your preferred password hashing method
+                    md5Password: md5(row[1]), // Use your preferred password hashing method
                     email: row[2],
                     department: row[3],
                     level: row[4],
