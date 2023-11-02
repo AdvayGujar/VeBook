@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 // import img2 from "../assets/img2.jpg"; // Import the background image
 import BookingConfirmation from "../Components/BookingConfirmation";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   getUserVariable,
   setVenueVariable,
@@ -17,7 +17,7 @@ function FacultyFootball() {
   const [endTime, setEndTime] = useState("");
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
-
+  const history = useNavigate();
   const openModal = (value) => {
     setModalIsOpen(value);
   };
@@ -285,7 +285,9 @@ function FacultyFootball() {
   const closeModal = () => {
     setModalIsOpen(false);
   };
-
+  const redirectToLogin = () => {
+    history("/logins");
+  };
   const venue_id = useParams().id;
   const [venue, setVenue] = useState({
     id: null,
@@ -438,26 +440,26 @@ function FacultyFootball() {
 
   return (
     <div style={backgroundStyles}>
-        <div style={contentStyles}>
-          <img
-            src={img}
-            alt={venue.name}
-            style={{ ...imageStyles, ...mediaQueryStyles.imageStyles }}
-          />
-          <div
-            style={{
-              ...descriptionStyles,
-              ...mediaQueryStyles.descriptionStyles,
-            }}
-          >
-            <h2>{venue.name}</h2>
-            <p>{venue.description}</p>
-            {/* <p>{venueDetails.location}</p>
+      <div style={contentStyles}>
+        <img
+          src={img}
+          alt={venue.name}
+          style={{ ...imageStyles, ...mediaQueryStyles.imageStyles }}
+        />
+        <div
+          style={{
+            ...descriptionStyles,
+            ...mediaQueryStyles.descriptionStyles,
+          }}
+        >
+          <h2>{venue.name}</h2>
+          <p>{venue.description}</p>
+          {/* <p>{venueDetails.location}</p>
             <p>{venueDetails.capacity}</p>
             <p>{venueDetails.openHours}</p> */}
-          </div>
-          <form onSubmit={handleSubmit}>
-            <div
+        </div>
+        <form onSubmit={handleSubmit}>
+          {/* <div
               className="date-time-container"
               style={dateTimeContainerStyles}
             >
@@ -497,31 +499,32 @@ function FacultyFootball() {
                   />
                 </label>
               </div>
-            </div>
-            {/* <button
+            </div> */}
+          {/* <button
             type="submit"
             style={(submitButtonStyles, isActive)}
             onClick={openModal}
           >
             Book
           </button> */}
-            {loading ? (
-              <button style={submitButtonStyles} disabled>
-                Loading...
-              </button>
-            ) : (
-              <button
-                type="submit"
-                style={submitButtonStyles}
-                onClick={openModal}
-              >
-                Book Now
-              </button>
-            )}
-            <BookingConfirmation isOpen={modalIsOpen} onClose={closeModal} />
-          </form>
-        </div>
+          {loading ? (
+            <button style={submitButtonStyles} disabled>
+              Loading...
+            </button>
+          ) : (
+            <button
+              type="submit"
+              style={submitButtonStyles}
+              // onClick={openModal}
+              onClick={redirectToLogin}
+            >
+              Login to continue
+            </button>
+          )}
+          <BookingConfirmation isOpen={modalIsOpen} onClose={closeModal} />
+        </form>
       </div>
+    </div>
   );
 }
 
