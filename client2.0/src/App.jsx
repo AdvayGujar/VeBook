@@ -147,6 +147,7 @@ function App() {
     "/faculty-seminar",
     "/faculty-mondini",
     "/customer-grounds",
+    "/customer-halls",
     "/customer-basketball",
     "/customer-football",
     "/customer-top",
