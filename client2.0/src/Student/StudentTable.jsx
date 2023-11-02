@@ -20,6 +20,14 @@ const statusMapping = {
     3: 'Pending',
 };
 
+const formatTime = (timeInt) => {
+    const timeString = timeInt.toString(); // Convert the integer to a string
+    const formattedTime =
+        timeString.substring(0, timeString.length - 2) +
+        ':' +
+        timeString.substring(timeString.length - 2); // Format the time as 'hh:mm'
+    return formattedTime;
+};
 
 const tableStyle = {
     borderCollapse: 'collapse',
@@ -77,12 +85,21 @@ class StudentTable extends Component {
                 return {
                     ...booking,
                     venue: venueMapping[booking.venue_id] || 'Unknown Venue',
-                    status: statusMapping[booking.status] || 'Unknown Status'
+                    status: statusMapping[booking.status] || 'Unknown Status',
+                    start_time: formatTime(booking.start_time),
+                    end_time: formatTime(booking.end_time),
                 };
             });
-            bookingsWithVenueNames.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            const limitedBookings = bookingsWithVenueNames.slice(0, 30);
+            bookingsWithVenueNames.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            // Sort based on status (active, pending, canceled, and elapsed)
+            bookingsWithVenueNames.sort((a, b) => {
+                const statusOrder = {'Active': 0, 'Pending': 1, 'Cancelled': 2, 'Elapsed': 3}; // Order of statuses: active, pending, canceled, elapsed
+                return statusOrder[a.status] - statusOrder[b.status];
+            });
+
+            const limitedBookings = bookingsWithVenueNames.slice(0, 15);
 
             this.setState({bookings: limitedBookings});
         } catch (error) {

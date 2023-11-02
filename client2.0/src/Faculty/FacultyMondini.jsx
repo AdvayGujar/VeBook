@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import img2 from '../assets/img3.jpg'; // Import the background image
+import React, {useState, useEffect} from 'react';
+import img2 from '../assets/img2.jpg'; // Import the background image
 import BookingConfirmation from '../Components/BookingConfirmation';
 import {
     getUserVariable,
@@ -9,60 +9,102 @@ import {
     getEmailVariable,
     getNameVariable,
 } from '../global';
+import {Link, useNavigate} from 'react-router-dom'; // Import Link
+
 
 
 function FacultyMondini() {
     const [date, setDate] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
+    const [bookings, setBookings] = useState([]);
 
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const history = useNavigate();
 
     const openModal = (value) => {
         setModalIsOpen(value);
     };
 
+    const fetchBookings = async (selectedDate) => {
+        const dt = new Date(selectedDate)
+        const mysqlDate = dt.toISOString().slice(0, 10);
 
-    const start = (startTime) => {
-        const [hourStr, minuteStr] = startTime.split(":");
-        const hour = parseInt(hourStr, 10);
-        const minute = parseInt(minuteStr, 10);
+        try {
+            // Assume this is an API endpoint to fetch bookings for a specific date
+            const response = await fetch(`http://localhost:3000/api/bookings/getAllBookingsByDate/${mysqlDate}`);
+            const data = await response.json();
+            if (!response.ok) {
+                setBookings([]);
+                throw new Error('Failed to fetch data');
+            }
 
-        // Check if it's p.m. and adjust the hour accordingly
-        let adjustedHour = hour;
-        if (startTime.includes("PM")) {
-            adjustedHour = hour === 12 ? 12 : hour + 12;
-        } else if (startTime.includes("AM") && hour === 12) {
-            adjustedHour = 0;
+            const filteredBookings = data.filter(booking => booking.venue_id === 4 && booking.level >= getLevelVariable());
+
+            setBookings(filteredBookings);
+        } catch (error) {
+            console.error('Error fetching bookings:', error);
+            // Handle errors, e.g., display an error message to the user
         }
+    };
 
-        // Convert the hour and minute to a 24-hour format integer (HHMM)
-        const timeAsInteger = adjustedHour * 100 + minute;
-        console.log(timeAsInteger);
-        // Update the state with the formatted time
-        return timeAsInteger;
-    }
+    const handleDateSelection = (selectedDate) => {
+        setDate(selectedDate);
+        fetchBookings(selectedDate); // Fetch bookings when a new date is selected
+    };
 
-    const end = (endTime) => {
-        const [hourStr, minuteStr] = endTime.split(":");
-        const hour = parseInt(hourStr, 10);
-        const minute = parseInt(minuteStr, 10);
 
-        // Check if it's p.m. and adjust the hour accordingly
-        let adjustedHour = hour;
-        if (endTime.includes("PM")) {
-            adjustedHour = hour === 12 ? 12 : hour + 12;
-        } else if (endTime.includes("AM") && hour === 12) {
-            adjustedHour = 0;
+    const renderTimeSlots = () => {
+        const timeSlots = [];
+        for (let i = 8; i <= 21; i++) {
+            const hour = i < 10 ? '0' + i : i;
+            const slotStartTime = `${hour}00`;
+            const slotEndTime = `${i + 1 < 10 ? '0' + (i + 1) : i + 1}00`;
+            console.log(bookings);
+            const isBooked = bookings.some(booking =>
+                (
+                    (booking.start_time >= slotStartTime && booking.end_time <= slotEndTime) && // Case 1
+                    (booking.status === 1 || booking.status === 3)
+                ) ||
+                (
+                    (booking.start_time < slotStartTime && booking.end_time > slotEndTime) && // Case 1
+                    (booking.status === 1 || booking.status === 3)
+                ) ||
+                (
+                    (booking.start_time < slotStartTime && booking.end_time <= slotEndTime &&
+                        booking.end_time > slotStartTime) && // Case 2
+                    (booking.status === 1 || booking.status === 3)
+                ) ||
+                (
+                    (booking.start_time >= slotStartTime && booking.start_time < slotEndTime &&
+                        booking.end_time > slotEndTime) && // Case 3
+                    (booking.status === 1 || booking.status === 3)
+                )
+            );
+            timeSlots.push(
+                <tr key={i}>
+                    <td style={{backgroundColor: isBooked ? 'blue' : 'transparent'}}> {slotStartTime}</td>
+                    <td style={{backgroundColor: isBooked ? 'blue' : 'transparent'}}> {slotEndTime}</td>
+                    <td style={{backgroundColor: isBooked ? 'blue' : 'transparent'}}>
+                        {isBooked ? 'Booked' : 'Available'}
+                    </td>
+                </tr>
+            );
         }
+        return timeSlots;
+    };
 
-        // Convert the hour and minute to a 24-hour format integer (HHMM)
-        const timeAsInteger = adjustedHour * 100 + minute;
+    const timeSlots = date ? renderTimeSlots() : null;
 
-        // Update the state with the formatted time
-        return timeAsInteger;
-    }
+    // UseEffect to trigger fetching when the date changes
+    useEffect(() => {
+        if (date) {
+            fetchBookings(date); // Fetch bookings when the date changes
+            console.log(bookings);
+        }
+    }, [date]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setVenueVariable(4);
@@ -83,8 +125,8 @@ function FacultyMondini() {
             try {
                 const checkData = {
                     date: mysqlDate,
-                    start_time: start(startTime),
-                    end_time: end(endTime),
+                    start_time: startTime,
+                    end_time: endTime,
                     venue_id: getVenueVariable(),
                 }
                 console.log('Working1');
@@ -100,7 +142,7 @@ function FacultyMondini() {
                 console.log('Working3');
                 if (response.status === 200) {
                     if (booking.level >= getLevelVariable()) {
-                        alert("Slot already full")
+                        alert("Slot already full");
                     } else {
                         console.log('Working4');
                         try {
@@ -109,8 +151,8 @@ function FacultyMondini() {
                                 venue_id: getVenueVariable(),
                                 level: getLevelVariable(),
                                 date: mysqlDate,
-                                start_time: start(startTime),
-                                end_time: end(endTime),
+                                start_time: startTime,
+                                end_time: endTime,
                                 status: 3,
                             };
 
@@ -129,7 +171,7 @@ function FacultyMondini() {
                                         const mailData = {
                                             name: user.name,
                                             email: user.email,
-                                            message: `${user.name} your booked slot for Football Ground on ${booking.date} from ${booking.start_time} to ${booking.end_time} has been canceled due to booking by a higher authority.`,
+                                            message: `${user.name} your booked slot for Mondini Hall on ${booking.date} from ${booking.start_time} to ${booking.end_time} has been canceled due to booking by a higher authority.`,
                                         };
 
                                         try {
@@ -170,6 +212,8 @@ function FacultyMondini() {
 
                             if (response.status === 200) {
 
+                                openModal(true);
+
                                 const mailData = {
                                     name: getNameVariable(),
                                     email: getEmailVariable(),
@@ -193,8 +237,7 @@ function FacultyMondini() {
                                 } catch (error) {
                                     console.error('An error occurred', error);
                                 }
-
-                                openModal(true);
+                                history('/faculty-dashboard');
                             } else {
                                 console.error('Server error');
                             }
@@ -210,8 +253,8 @@ function FacultyMondini() {
                             venue_id: getVenueVariable(),
                             level: getLevelVariable(),
                             date: mysqlDate,
-                            start_time: start(startTime),
-                            end_time: end(endTime),
+                            start_time: startTime,
+                            end_time: endTime,
                             status: 3,
                         };
 
@@ -225,6 +268,8 @@ function FacultyMondini() {
                         });
 
                         if (response.status === 200) {
+                            openModal(true);
+
                             const mailData = {
                                 name: getNameVariable(),
                                 email: getEmailVariable(),
@@ -248,8 +293,7 @@ function FacultyMondini() {
                             } catch (error) {
                                 console.error('An error occurred', error);
                             }
-
-                            openModal(true);
+                            history('/faculty-dashboard');
                         } else {
                             console.error('Server error');
                         }
@@ -265,6 +309,30 @@ function FacultyMondini() {
 
     const closeModal = () => {
         setModalIsOpen(false);
+    };
+
+    const generateStartTimeOptions = () => {
+        const options = [];
+        for (let i = 8; i <= 21; i++) {
+            let hour = i < 10 ? '0' + i : i;
+            let ampm = i < 12 ? 'A.M.' : 'P.M.';
+            options.push(
+                <option key={i} value={`${hour}00`}>{hour}:00 {ampm}</option>
+            );
+        }
+        return options;
+    };
+
+    const generateEndTimeOptions = () => {
+        const options = [];
+        for (let i = 9; i <= 22; i++) {
+            let hour = i < 10 ? '0' + i : i;
+            let ampm = i < 12 ? 'A.M.' : 'P.M.';
+            options.push(
+                <option key={i} value={`${hour}00`}>{hour}:00 {ampm}</option>
+            );
+        }
+        return options;
     };
 
     const containerStyles = {
@@ -290,17 +358,6 @@ function FacultyMondini() {
         fontSize: '16px', // Increased font size for better readability
     };
 
-    const nameEmailContainerStyles = {
-        display: 'flex',
-        flexWrap: 'nowrap', // Allow wrapping on smaller screens
-        justifyContent: 'space-between',
-    };
-
-    const nameInputStyles = {
-        flex: 1,
-        marginRight: '10px', // Adjust margin as needed
-    };
-
     const dateTimeContainerStyles = {
         display: 'flex',
         flexWrap: 'nowrap', // Allow wrapping on smaller screens
@@ -311,9 +368,7 @@ function FacultyMondini() {
         flex: 1,
         marginRight: '20px', // Adjust margin as needed
     };
-    const timeInputStyles = {
-        flex: 1,
-    };
+
     const buttonStyles = {
         backgroundColor: '#007bff',
         color: '#fff',
@@ -323,27 +378,11 @@ function FacultyMondini() {
         cursor: 'pointer',
         fontSize: '18px', // Increased font size for the button
     };
-    /* Add styles for terms and conditions alignment */
-    const termsContainerStyles = {
-        display: 'flex',
-        alignItems: 'center',
-        marginTop: '10px', // Adjust spacing
-    };
-
-    /* Add styles for the terms and conditions checkbox */
-    const termsCheckboxStyles = {
-        marginRight: '5px', // Adjust spacing
-    };
 
     const submitButtonStyles = {
         ...buttonStyles, // Spread the buttonStyles object to inherit its properties
         backgroundColor: '#007bff',
         color: '#fff',
-    };
-
-    const submitButtonHoverStyles = {
-        ...submitButtonStyles, // Spread the submitButtonStyles object to inherit its properties
-        backgroundColor: '#0056b3',
     };
 
     const backgroundStyles = {
@@ -372,7 +411,7 @@ function FacultyMondini() {
                                 <input
                                     type="date"
                                     value={date}
-                                    onChange={(e) => setDate(e.target.value)}
+                                    onChange={(e) => handleDateSelection(e.target.value)}
                                     required
                                     style={inputStyles}
                                 />
@@ -381,30 +420,44 @@ function FacultyMondini() {
                         <div className="time-input" style={dateInputStyles}>
                             <label>
                                 Start Time:
-                                <input
-                                    type="time"
+                                <select
                                     value={startTime}
                                     onChange={(e) => setStartTime(e.target.value)}
                                     required
                                     style={inputStyles}
-                                />
+                                >
+                                    <option value="" disabled>Select Start Time</option>
+                                    {generateStartTimeOptions()}
+                                </select>
                             </label>
                         </div>
                         <div className="time-input" style={dateInputStyles}>
                             <label>
                                 End Time:
-                                <input
-                                    type="time"
+                                <select
                                     value={endTime}
                                     onChange={(e) => setEndTime(e.target.value)}
                                     required
                                     style={inputStyles}
-                                />
+                                >
+                                    <option value="" disabled>Select End Time</option>
+                                    {generateEndTimeOptions()}
+                                </select>
                             </label>
                         </div>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>{timeSlots}</tbody>
+                        </table>
                     </div>
-                    <button type="submit" style={submitButtonStyles} onClick={openModal}>
-                        Book Court
+                    <button type="submit" style={submitButtonStyles}>
+                        Book Hall
                     </button>
                     <BookingConfirmation isOpen={modalIsOpen} onClose={closeModal}/>
                 </form>

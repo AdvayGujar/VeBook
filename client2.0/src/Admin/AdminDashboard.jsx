@@ -24,7 +24,15 @@ const statusMapping = {
     1: 'Active',
     0: 'Cancelled',
     2: 'Elapsed',
-    3: 'Pending'
+    3: 'Pending',
+};
+
+const levelMapping = {
+    1: 'Student',
+    2: 'Management',
+    3: 'Faculty',
+    4: 'Father',
+    5: 'Customer',
 };
 
 const fetchUserNameById = async (userId) => {
@@ -39,6 +47,15 @@ const fetchUserNameById = async (userId) => {
         console.error(error);
         return 'Unknown User'; // Return a default value or handle the error accordingly
     }
+};
+
+const formatTime = (timeInt) => {
+  const timeString = timeInt.toString(); // Convert the integer to a string
+  const formattedTime =
+    timeString.substring(0, timeString.length - 2) +
+    ':' +
+    timeString.substring(timeString.length - 2); // Format the time as 'hh:mm'
+  return formattedTime;
 };
 
 const styles = {
@@ -173,7 +190,10 @@ class AdminDashboard extends Component {
                 return {
                     ...booking,
                     venue: venueMapping[booking.venue_id] || 'Unknown Venue',
-                    status: statusMapping[booking.status] || 'Unknown Status'
+                    status: statusMapping[booking.status] || 'Unknown Status',
+                    level: levelMapping[booking.level] || 'Unknown Level',
+                    start_time: formatTime(booking.start_time),
+                    end_time: formatTime(booking.end_time),
                 };
             });
 
@@ -205,7 +225,9 @@ class AdminDashboard extends Component {
                 return {
                     ...booking,
                     venue: venueMapping[booking.venue_id] || 'Unknown Venue',
-                    status: statusMapping[booking.status] || 'Unknown Status'
+                    status: statusMapping[booking.status] || 'Unknown Status',
+                    start_time: formatTime(booking.start_time),
+                    end_time: formatTime(booking.end_time),
                 };
             });
 
@@ -463,8 +485,11 @@ class AdminDashboard extends Component {
                         <tr>
                             <th style={styles.tableHeaderCell}>Booking ID</th>
                             <th style={styles.tableHeaderCell}>User</th>
+                            <th style={styles.tableHeaderCell}>Level</th>
                             <th style={styles.tableHeaderCell}>Venue</th>
                             <th style={styles.tableHeaderCell}>Date</th>
+                            <th style={styles.tableHeaderCell}>Start Time</th>
+                            <th style={styles.tableHeaderCell}>End Time</th>
                             <th style={styles.tableHeaderCell}>Status</th>
                             <th style={styles.tableHeaderCell}>Action</th>
                         </tr>
@@ -474,8 +499,11 @@ class AdminDashboard extends Component {
                             <tr key={index}>
                                 <td style={styles.tableCell}>{booking.id}</td>
                                 <td style={styles.tableCell}>{booking.user}</td>
+                                <td style={styles.tableCell}>{booking.level}</td>
                                 <td style={styles.tableCell}>{booking.venue}</td>
                                 <td style={styles.tableCell}>{booking.date}</td>
+                                <td style={styles.tableCell}>{booking.start_time}</td>
+                                <td style={styles.tableCell}>{booking.end_time}</td>
                                 <td style={styles.tableCell}>{booking.status}</td>
                                 <td style={styles.tableCell}>
                                     <button
@@ -511,6 +539,8 @@ class AdminDashboard extends Component {
                             <th style={styles.tableHeaderCell}>User</th>
                             <th style={styles.tableHeaderCell}>Venue</th>
                             <th style={styles.tableHeaderCell}>Date</th>
+                            <th style={styles.tableHeaderCell}>Start Time</th>
+                            <th style={styles.tableHeaderCell}>End Time</th>
                             <th style={styles.tableHeaderCell}>Status</th>
                         </tr>
                         </thead>
@@ -521,6 +551,8 @@ class AdminDashboard extends Component {
                                 <td style={styles.tableCell}>{booking.user}</td>
                                 <td style={styles.tableCell}>{booking.venue}</td>
                                 <td style={styles.tableCell}>{booking.date}</td>
+                                <td style={styles.tableCell}>{booking.start_time}</td>
+                                <td style={styles.tableCell}>{booking.end_time}</td>
                                 <td style={styles.tableCell}>{booking.status}</td>
                             </tr>
                         ))}

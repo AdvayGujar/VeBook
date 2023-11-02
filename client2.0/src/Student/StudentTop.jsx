@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import img2 from '../assets/img4.jpg'; // Import the background image
+import React, {useState, useEffect} from 'react';
+import img2 from '../assets/img2.jpg'; // Import the background image
 import BookingConfirmation from '../Components/BookingConfirmation';
 import {
     getUserVariable,
@@ -9,18 +9,105 @@ import {
     getEmailVariable,
     getNameVariable,
 } from '../global';
+import {Link, useNavigate} from 'react-router-dom'; // Import Link
 
 
 function StudentTop() {
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
-
+    const [bookings, setBookings] = useState([]);
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const history = useNavigate();
 
     const openModal = (value) => {
         setModalIsOpen(value);
     };
+
+    const fetchBookings = async (selectedDate) => {
+        const dt = new Date(selectedDate)
+        const mysqlDate = dt.toISOString().slice(0, 10);
+        console.log(getLevelVariable())
+        try {
+            // Assume this is an API endpoint to fetch bookings for a specific date
+            const response = await fetch(`http://localhost:3000/api/bookings/getAllBookingsByDate/${mysqlDate}`);
+            const data = await response.json();
+            if (!response.ok) {
+                setBookings([]);
+                throw new Error('Failed to fetch data');
+            }
+
+            const filteredBookings = data.filter(booking => booking.venue_id === 3 && booking.level >= getLevelVariable());
+
+            setBookings(filteredBookings);
+        } catch (error) {
+            console.error('Error fetching bookings:', error);
+            // Handle errors, e.g., display an error message to the user
+        }
+    };
+
+    const handleDateSelection = (selectedDate) => {
+        setDate(selectedDate);
+        fetchBookings(selectedDate); // Fetch bookings when a new date is selected
+    };
+
+
+    const renderTimeSlots = () => {
+        const specificTimeSlots = [
+            {start: "1330", end: "1400", display: "13:30 to 14:00"},
+            {start: "1600", end: "1630", display: "16:00 to 16:30"},
+            {start: "1630", end: "1700", display: "16:30 to 17:00"},
+            {start: "1700", end: "1730", display: "17:00 to 17:30"},
+            {start: "1730", end: "1800", display: "17:30 to 18:00"},
+        ];
+
+        const timeSlots = specificTimeSlots.map((slot, index) => {
+            const isBooked = bookings.some(booking =>
+                (
+                    (booking.start_time >= slot.start && booking.end_time <= slot.end) && // Case 1
+                    (booking.status === 1 || booking.status === 3)
+                ) ||
+                (
+                    (booking.start_time < slot.start && booking.end_time > slot.end) && // Case 1
+                    (booking.status === 1 || booking.status === 3)
+                ) ||
+                (
+                    (booking.start_time < slot.start && booking.end_time <= slot.end &&
+                        booking.end_time > slot.start) && // Case 2
+                    (booking.status === 1 || booking.status === 3)
+                ) ||
+                (
+                    (booking.start_time >= slot.start && booking.start_time < slot.end &&
+                        booking.end_time > slot.end) && // Case 3
+                    (booking.status === 1 || booking.status === 3)
+                )
+            );
+
+            return (
+                <tr key={index}>
+                    <td style={{backgroundColor: isBooked ? 'blue' : 'transparent'}}>
+                        {slot.display}
+                    </td>
+                    <td style={{backgroundColor: isBooked ? 'blue' : 'transparent'}}>
+                        {isBooked ? 'Booked' : 'Available'}
+                    </td>
+                </tr>
+            );
+        });
+
+        return timeSlots;
+    };
+
+
+    const timeSlots = date ? renderTimeSlots() : null;
+
+    // UseEffect to trigger fetching when the date changes
+    useEffect(() => {
+        if (date) {
+            fetchBookings(date); // Fetch bookings when the date changes
+            console.log(bookings);
+        }
+    }, [date]);
 
 
     const handleSubmit = async (e) => {
@@ -94,7 +181,7 @@ function StudentTop() {
                                         const mailData = {
                                             name: user.name,
                                             email: user.email,
-                                            message: `${user.name} your booked slot for Basketball Court on ${booking.date} from ${booking.start_time} to ${booking.end_time} has been canceled due to booking by a higher authority.`,
+                                            message: `${user.name} your booked slot for Top Court on ${booking.date} from ${booking.start_time} to ${booking.end_time} has been canceled due to booking by a higher authority.`,
                                         };
 
                                         try {
@@ -138,7 +225,7 @@ function StudentTop() {
                                 const mailData = {
                                     name: getNameVariable(),
                                     email: getEmailVariable(),
-                                    message: `${getNameVariable()} you have booked the Basketball Court on ${date} from ${startTime} to ${endTime}`,
+                                    message: `${getNameVariable()} you have booked the Top Court on ${date} from ${startTime} to ${endTime}`,
                                 };
 
                                 try {
@@ -190,10 +277,12 @@ function StudentTop() {
                         });
 
                         if (response.status === 200) {
+                            openModal(true);
+
                             const mailData = {
                                 name: getNameVariable(),
                                 email: getEmailVariable(),
-                                message: `${getNameVariable()} you have booked the Basketball Court on ${date} from ${startTime} to ${endTime}`,
+                                message: `${getNameVariable()} you have booked the Top Court on ${date} from ${startTime} to ${endTime}`,
                             };
 
                             try {
@@ -213,8 +302,7 @@ function StudentTop() {
                             } catch (error) {
                                 console.error('An error occurred', error);
                             }
-
-                            openModal(true);
+                            history('/student-dashboard');
                         } else {
                             console.error('Server error');
                         }
@@ -255,17 +343,6 @@ function StudentTop() {
         fontSize: '16px', // Increased font size for better readability
     };
 
-    const nameEmailContainerStyles = {
-        display: 'flex',
-        flexWrap: 'nowrap', // Allow wrapping on smaller screens
-        justifyContent: 'space-between',
-    };
-
-    const nameInputStyles = {
-        flex: 1,
-        marginRight: '10px', // Adjust margin as needed
-    };
-
     const dateTimeContainerStyles = {
         display: 'flex',
         flexWrap: 'nowrap', // Allow wrapping on smaller screens
@@ -276,9 +353,7 @@ function StudentTop() {
         flex: 1,
         marginRight: '20px', // Adjust margin as needed
     };
-    const timeInputStyles = {
-        flex: 1,
-    };
+
     const buttonStyles = {
         backgroundColor: '#007bff',
         color: '#fff',
@@ -288,27 +363,11 @@ function StudentTop() {
         cursor: 'pointer',
         fontSize: '18px', // Increased font size for the button
     };
-    /* Add styles for terms and conditions alignment */
-    const termsContainerStyles = {
-        display: 'flex',
-        alignItems: 'center',
-        marginTop: '10px', // Adjust spacing
-    };
-
-    /* Add styles for the terms and conditions checkbox */
-    const termsCheckboxStyles = {
-        marginRight: '5px', // Adjust spacing
-    };
 
     const submitButtonStyles = {
         ...buttonStyles, // Spread the buttonStyles object to inherit its properties
         backgroundColor: '#007bff',
         color: '#fff',
-    };
-
-    const submitButtonHoverStyles = {
-        ...submitButtonStyles, // Spread the submitButtonStyles object to inherit its properties
-        backgroundColor: '#0056b3',
     };
 
     const backgroundStyles = {
@@ -337,7 +396,7 @@ function StudentTop() {
                                 <input
                                     type="date"
                                     value={date}
-                                    onChange={(e) => setDate(e.target.value)}
+                                    onChange={(e) => handleDateSelection(e.target.value)}
                                     required
                                     style={inputStyles}
                                 />
@@ -361,8 +420,17 @@ function StudentTop() {
                                 </select>
                             </label>
                         </div>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Start Time</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>{timeSlots}</tbody>
+                        </table>
                     </div>
-                    <button type="submit" style={submitButtonStyles} onClick={openModal}>
+                    <button type="submit" style={submitButtonStyles}>
                         Book Court
                     </button>
                     <BookingConfirmation isOpen={modalIsOpen} onClose={closeModal}/>
