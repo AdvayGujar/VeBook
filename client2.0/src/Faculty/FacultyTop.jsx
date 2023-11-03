@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import img2 from '../assets/img2.jpg'; // Import the background image
+import img2 from '../assets/img4.jpg'; // Import the background image
 import BookingConfirmation from '../Components/BookingConfirmation';
 import {
     getUserVariable,
